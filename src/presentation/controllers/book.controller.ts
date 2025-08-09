@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -21,12 +22,14 @@ import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
 import { join } from 'path';
 import { DeleteBookRequest } from 'src/application/contracts/delete-book-request';
+import { GetFavoritedBooksUseCase } from 'src/application/usecases/get-favorited-books.usecase';
 
 @Controller('books')
 export class BookController {
   constructor(
     private readonly getBooksUseCase: GetBooksUseCase,
     private readonly getBookByIdUseCase: GetBookByIdUseCase,
+    private readonly getFavoritedBooksUseCase: GetFavoritedBooksUseCase,
     private readonly createBookUseCase: CreateBookUseCase,
     private readonly deleteBookUseCase: DeleteBookUseCase,
     private readonly updateBookUseCase: UpdateBookUseCase,
@@ -35,6 +38,11 @@ export class BookController {
   @Get()
   getBooks() {
     return this.getBooksUseCase.execute();
+  }
+
+  @Get('favorited')
+  getFavoritedBooks() {
+    return this.getFavoritedBooksUseCase.execute();
   }
 
   @Get(`:id`)
@@ -125,8 +133,9 @@ export class BookController {
     return this.deleteBookUseCase.execute(deleteBookRequest);
   }
 
-  @Post(`:id`)
-  updateBook(@Body() updateBookDto: UpdateBookDto, @Param('id') id: string) {
+  @Put(`:id`)
+  updateBook(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
+    console.log('Update book DTO:', updateBookDto);
     const updateBookRequest: UpdateBookRequest = {
       id,
       ...updateBookDto,

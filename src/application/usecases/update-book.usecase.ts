@@ -3,6 +3,7 @@ import { UpdateBookRequest } from '../contracts/update-book-request';
 import { UseCase } from '../interfaces/usecase';
 import { IBookRepository } from '../interfaces/book-repository';
 import { Inject, Injectable } from '@nestjs/common';
+import { BookNotFoundError } from 'src/domain/exceptions/book.exceptions';
 
 @Injectable()
 export class UpdateBookUseCase implements UseCase<UpdateBookRequest, Book> {
@@ -13,11 +14,12 @@ export class UpdateBookUseCase implements UseCase<UpdateBookRequest, Book> {
   async execute(request: UpdateBookRequest): Promise<Book> {
     const book = await this.bookRepository.findById(request.id);
     if (!book) {
-      throw new Error(`Book with id ${request.id} not found`);
+      throw new BookNotFoundError();
     }
 
     book.title = request.title ?? book.title;
     book.author = request.author ?? book.author;
+    book.isFavorited = request.isFavorited ?? book.isFavorited;
     book.publishedYear = request.publishedYear ?? book.publishedYear;
 
     await this.bookRepository.update(request.id, book);
