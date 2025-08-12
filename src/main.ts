@@ -16,6 +16,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new DomainExceptionFilter());
   app.use(cookieParser());
+  app.enableCors();
 
   const port = process.env.PORT || 3000;
   const uploadsDirectory = process.env.UPLOADS_DIRECTORY || './uploads';

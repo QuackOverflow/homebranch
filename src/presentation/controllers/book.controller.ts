@@ -43,7 +43,6 @@ export class BookController {
     return this.getBooksUseCase.execute();
   }
 
-
   @Get('favorited')
   @UseGuards(JwtAuthGuard)
   getFavoritedBooks() {
