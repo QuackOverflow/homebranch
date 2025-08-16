@@ -1,7 +1,7 @@
 export interface CreateBookRequest {
   title: string;
   author: string;
-  isFavorited?: boolean;
+  isFavorite?: boolean;
   publishedYear?: number;
   fileName: string;
   coverImageFileName?: string;

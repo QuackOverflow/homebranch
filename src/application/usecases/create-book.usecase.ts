@@ -5,6 +5,7 @@ import { UseCase } from '../interfaces/usecase';
 import { BookFactory } from 'src/domain/entities/book.factory';
 import { Book } from 'src/domain/entities/book.entity';
 import { randomUUID } from 'crypto';
+import { Result } from '../interfaces/result';
 
 @Injectable()
 export class CreateBookUseCase implements UseCase<CreateBookRequest, Book> {
@@ -12,18 +13,17 @@ export class CreateBookUseCase implements UseCase<CreateBookRequest, Book> {
     @Inject('BookRepository') private bookRepository: IBookRepository,
   ) {}
 
-  async execute(dto: CreateBookRequest): Promise<Book> {
+  async execute(dto: CreateBookRequest): Promise<Result<Book>> {
     const id = randomUUID();
     const book = BookFactory.create(
       id,
       dto.title,
       dto.author,
       dto.fileName,
-      dto.isFavorited ?? false,
+      dto.isFavorite ?? false,
       dto.publishedYear,
       dto.coverImageFileName,
     );
-    await this.bookRepository.save(book);
-    return book;
+    return await this.bookRepository.create(book);
   }
 }

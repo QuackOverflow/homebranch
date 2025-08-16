@@ -23,7 +23,7 @@ import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
 import { join } from 'path';
 import { DeleteBookRequest } from 'src/application/contracts/delete-book-request';
-import { GetFavoritedBooksUseCase } from 'src/application/usecases/get-favorited-books.usecase';
+import { GetFavoriteBooksUseCase } from 'src/application/usecases/get-favorite-books-use-case.service';
 import { JwtAuthGuard } from '../../infrastructure/guards/jwt-auth.guard';
 
 @Controller('books')
@@ -31,7 +31,7 @@ export class BookController {
   constructor(
     private readonly getBooksUseCase: GetBooksUseCase,
     private readonly getBookByIdUseCase: GetBookByIdUseCase,
-    private readonly getFavoritedBooksUseCase: GetFavoritedBooksUseCase,
+    private readonly getFavoriteBooksUseCase: GetFavoriteBooksUseCase,
     private readonly createBookUseCase: CreateBookUseCase,
     private readonly deleteBookUseCase: DeleteBookUseCase,
     private readonly updateBookUseCase: UpdateBookUseCase,
@@ -43,10 +43,10 @@ export class BookController {
     return this.getBooksUseCase.execute();
   }
 
-  @Get('favorited')
+  @Get('favorite')
   @UseGuards(JwtAuthGuard)
-  getFavoritedBooks() {
-    return this.getFavoritedBooksUseCase.execute();
+  getFavoriteBooks() {
+    return this.getFavoriteBooksUseCase.execute();
   }
 
   @Get(`:id`)

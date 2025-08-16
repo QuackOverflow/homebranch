@@ -4,7 +4,7 @@ export class JwtPayload {
     public readonly email: string,
     public readonly roles: string[],
     public readonly issuedAt: Date,
-    public readonly expiresAt: Date
+    public readonly expiresAt: Date,
   ) {}
 
   isExpired(): boolean {
@@ -25,11 +25,11 @@ export class JwtPayload {
     };
   }
 
-  static fromPlainObject(payload: any): JwtPayload {
+  static fromPlainObject(payload: Record<string, any>): JwtPayload {
     return new JwtPayload(
-      payload.sub,
-      payload.email,
-      payload.roles || [],
+      payload.sub as string,
+      payload.email as string,
+      (payload.roles as string[]) || [],
       new Date(payload.iat * 1000),
       new Date(payload.exp * 1000),
     );

@@ -3,5 +3,5 @@ export interface UpdateBookRequest {
   title?: string;
   author?: string;
   publishedYear?: number;
-  isFavorited?: boolean;
+  isFavorite?: boolean;
 }

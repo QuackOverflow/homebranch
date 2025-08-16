@@ -11,8 +11,8 @@ export class BookEntity {
   @Column()
   author: string;
 
-  @Column({ name: 'is_favorited' })
-  isFavorited: boolean;
+  @Column({ name: 'is_favorite' })
+  isFavorite: boolean;
 
   @Column({ name: 'published_year', nullable: true })
   publishedYear?: number;
