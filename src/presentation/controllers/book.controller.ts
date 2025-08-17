@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -26,6 +27,7 @@ import { DeleteBookRequest } from 'src/application/contracts/delete-book-request
 import { GetFavoriteBooksUseCase } from 'src/application/usecases/get-favorite-books-use-case.service';
 import { JwtAuthGuard } from '../../infrastructure/guards/jwt-auth.guard';
 import { MapResultInterceptor } from '../interceptors/map_result.interceptor';
+import { PaginatedQuery } from '../../application/contracts/paginated-query';
 
 @Controller('books')
 @UseInterceptors(MapResultInterceptor)
@@ -41,8 +43,9 @@ export class BookController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  getBooks() {
-    return this.getBooksUseCase.execute();
+  getBooks(@Query() paginationDto: PaginatedQuery) {
+    console.log(paginationDto);
+    return this.getBooksUseCase.execute(paginationDto);
   }
 
   @Get('favorite')

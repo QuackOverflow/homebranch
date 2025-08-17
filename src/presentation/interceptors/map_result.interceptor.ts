@@ -11,10 +11,7 @@ import { Response } from 'express';
 
 @Injectable()
 export class MapResultInterceptor implements NestInterceptor {
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler<any>,
-  ): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const response: Response = context.switchToHttp().getResponse();
     return next.handle().pipe(
       map((result) => {

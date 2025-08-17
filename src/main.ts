@@ -15,7 +15,9 @@ async function bootstrap() {
   });
 
   app.useGlobalFilters(new DomainExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe({ stopAtFirstError: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({ stopAtFirstError: true, transform: true }),
+  );
   app.use(cookieParser());
   app.enableCors();
 

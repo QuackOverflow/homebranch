@@ -9,6 +9,7 @@ import { existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { BookNotFoundFailure } from '../../domain/failures/book.failures';
 import { Result } from '../../core/result';
+import { PaginationResult } from '../../core/pagination_result';
 
 @Injectable()
 export class TypeOrmBookRepository implements IBookRepository {
@@ -22,9 +23,23 @@ export class TypeOrmBookRepository implements IBookRepository {
     return Result.success(BookMapper.toDomain(savedEntity));
   }
 
-  async findAll(): Promise<Result<Book[]>> {
-    const bookEntities = await this.repository.find();
-    return Result.success(BookMapper.toDomainList(bookEntities));
+  async findAll(
+    limit?: number,
+    offset?: number,
+  ): Promise<Result<PaginationResult<Book[]>>> {
+    const [bookEntities, total] = await this.repository.findAndCount({
+      take: limit,
+      skip: offset,
+    });
+
+    return Result.success({
+      data: BookMapper.toDomainList(bookEntities),
+      limit: limit,
+      offset: offset,
+      total: total,
+      nextCursor:
+        offset && limit && total > offset + limit ? offset + limit : null,
+    });
   }
 
   async findById(id: string): Promise<Result<Book>> {
@@ -73,14 +88,32 @@ export class TypeOrmBookRepository implements IBookRepository {
     return Result.success(book);
   }
 
-  async findByAuthor(author: string): Promise<Result<Book[]>> {
-    const bookEntities = await this.repository.find({ where: { author } });
-    return Result.success(BookMapper.toDomainList(bookEntities));
+  async findByAuthor(
+    author: string,
+    limit?: number,
+    offset?: number,
+  ): Promise<Result<PaginationResult<Book[]>>> {
+    const [bookEntities, total] = await this.repository.findAndCount({
+      where: { author },
+      take: limit,
+      skip: offset,
+    });
+    return Result.success({
+      data: BookMapper.toDomainList(bookEntities),
+      total: total,
+      nextCursor:
+        limit && offset && total > offset + limit ? offset + limit : null,
+    });
   }
 
-  async findFavorites(): Promise<Result<Book[]>> {
+  async findFavorites(
+    limit?: number,
+    offset?: number,
+  ): Promise<Result<Book[]>> {
     const bookEntities = await this.repository.find({
       where: { isFavorite: true },
+      take: limit,
+      skip: offset,
     });
     return Result.success(BookMapper.toDomainList(bookEntities));
   }

@@ -21,9 +21,17 @@ export class CreateBookUseCase implements UseCase<CreateBookRequest, Book> {
       dto.author,
       dto.fileName,
       dto.isFavorite ?? false,
-      dto.publishedYear ? parseInt(dto.publishedYear) : undefined,
+      dto.publishedYear ? this._parseYear(dto.publishedYear) : undefined,
       dto.coverImageFileName,
     );
     return await this.bookRepository.create(book);
+  }
+
+  _parseYear(year: string): number | undefined {
+    const yearNumber = parseInt(year);
+    if (isNaN(yearNumber)) {
+      return;
+    }
+    return yearNumber;
   }
 }
