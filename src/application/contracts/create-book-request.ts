@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateBookRequest {
   @IsNotEmpty({ message: 'Title is required' })
@@ -20,8 +14,8 @@ export class CreateBookRequest {
   isFavorite?: boolean;
 
   @IsOptional()
-  @IsNumber({}, { message: 'Invalid Published Year' })
-  publishedYear?: number;
+  @IsString({ message: 'Invalid Published Year' })
+  publishedYear?: string;
 
   @IsOptional()
   @IsString()

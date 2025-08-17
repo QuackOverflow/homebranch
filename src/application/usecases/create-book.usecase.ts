@@ -21,7 +21,7 @@ export class CreateBookUseCase implements UseCase<CreateBookRequest, Book> {
       dto.author,
       dto.fileName,
       dto.isFavorite ?? false,
-      dto.publishedYear,
+      dto.publishedYear ? parseInt(dto.publishedYear) : undefined,
       dto.coverImageFileName,
     );
     return await this.bookRepository.create(book);
