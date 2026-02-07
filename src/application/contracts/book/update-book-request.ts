@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
+import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateBookRequest {
   @IsUUID()
@@ -23,6 +17,5 @@ export class UpdateBookRequest {
   publishedYear?: number;
 
   @IsOptional()
-  @IsBoolean()
   isFavorite?: boolean;
 }

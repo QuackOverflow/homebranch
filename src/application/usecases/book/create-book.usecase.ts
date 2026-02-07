@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateBookRequest } from '../contracts/create-book-request';
-import { IBookRepository } from '../interfaces/book-repository';
-import { UseCase } from '../interfaces/usecase';
+import { CreateBookRequest } from '../../contracts/book/create-book-request';
+import { IBookRepository } from '../../interfaces/book-repository';
 import { BookFactory } from 'src/domain/entities/book.factory';
 import { Book } from 'src/domain/entities/book.entity';
 import { randomUUID } from 'crypto';
-import { Result } from '../../core/result';
+import { Result } from '../../../core/result';
+import { UseCase } from '../../../core/usecase';
 
 @Injectable()
 export class CreateBookUseCase implements UseCase<CreateBookRequest, Book> {
