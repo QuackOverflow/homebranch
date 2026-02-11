@@ -28,7 +28,9 @@ describe('RemoveBookFromBookShelfUseCase', () => {
       ],
     }).compile();
 
-    useCase = module.get<RemoveBookFromBookShelfUseCase>(RemoveBookFromBookShelfUseCase);
+    useCase = module.get<RemoveBookFromBookShelfUseCase>(
+      RemoveBookFromBookShelfUseCase,
+    );
     bookShelfRepository = module.get('BookShelfRepository');
   });
 
@@ -48,7 +50,7 @@ describe('RemoveBookFromBookShelfUseCase', () => {
       author: 'Author',
       fileName: 'file-name.epub',
       isFavorite: false,
-    }
+    };
 
     const mockBookShelf: BookShelf = {
       id: 'bookshelf-123',

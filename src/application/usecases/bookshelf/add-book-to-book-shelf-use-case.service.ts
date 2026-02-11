@@ -5,7 +5,6 @@ import { UseCase } from 'src/core/usecase';
 import { BookShelf } from 'src/domain/entities/bookshelf.entity';
 import { IBookShelfRepository } from '../../interfaces/bookshelf-repository';
 import { AddBookToBookShelfRequest } from '../../contracts/bookshelf/add-book-to-book-shelf-request';
-import { BookNotFoundFailure } from 'src/domain/failures/book.failures';
 
 @Injectable()
 export class AddBookToBookShelfUseCase

@@ -9,12 +9,6 @@ export abstract class Failure {
 }
 
 export abstract class Result<T, E = Failure> {
-  abstract isSuccess(): this is _Success<T, E>;
-  abstract isFailure(): this is _Failure<T, E>;
-
-  abstract getValue(): T;
-  abstract getFailure(): E;
-
   static success<T, E = Failure>(value: T): Result<T, E> {
     return new _Success(value);
   }
@@ -22,6 +16,14 @@ export abstract class Result<T, E = Failure> {
   static failure<T, E = Failure>(failure: E): Result<T, E> {
     return new _Failure(failure);
   }
+
+  abstract isSuccess(): this is _Success<T, E>;
+
+  abstract isFailure(): this is _Failure<T, E>;
+
+  abstract getValue(): T;
+
+  abstract getFailure(): E;
 }
 
 class _Success<T, E> extends Result<T, E> {

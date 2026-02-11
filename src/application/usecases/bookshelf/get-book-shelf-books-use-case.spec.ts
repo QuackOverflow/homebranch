@@ -83,8 +83,12 @@ describe('GetBookShelfBooksUseCase', () => {
       expect(result.isSuccess()).toBe(true);
       expect(result.getValue().data).toHaveLength(1);
       expect(result.getValue().data[0]).toEqual(mockBook);
-      expect(bookShelfRepository.findById).toHaveBeenCalledWith('bookshelf-123');
-      expect(bookRepository.findByBookShelfId).toHaveBeenCalledWith(mockBookShelf);
+      expect(bookShelfRepository.findById).toHaveBeenCalledWith(
+        'bookshelf-123',
+      );
+      expect(bookRepository.findByBookShelfId).toHaveBeenCalledWith(
+        mockBookShelf,
+      );
     });
 
     it('should return failure when bookshelf is not found', async () => {
@@ -96,7 +100,9 @@ describe('GetBookShelfBooksUseCase', () => {
 
       expect(result.isSuccess()).toBe(false);
       expect(result.getFailure()).toBeInstanceOf(BookShelfNotFoundFailure);
-      expect(bookShelfRepository.findById).toHaveBeenCalledWith('nonexistent-id');
+      expect(bookShelfRepository.findById).toHaveBeenCalledWith(
+        'nonexistent-id',
+      );
       expect(bookRepository.findByBookShelfId).not.toHaveBeenCalled();
     });
   });
