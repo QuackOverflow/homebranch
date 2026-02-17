@@ -17,7 +17,11 @@ export class GetBooksUseCase
   async execute({
     limit,
     offset,
+    query,
   }: PaginatedQuery): Promise<Result<PaginationResult<Book[]>>> {
+    if (query) {
+      return await this.bookRepository.searchByTitle(query, limit, offset);
+    }
     return await this.bookRepository.findAll(limit, offset);
   }
 }
