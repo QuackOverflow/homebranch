@@ -183,4 +183,29 @@ export class TypeOrmBookRepository implements IBookRepository {
           : null,
     });
   }
+
+  async searchFavoritesByTitle(
+    title: string,
+    limit?: number,
+    offset?: number,
+  ): Promise<Result<PaginationResult<Book[]>>> {
+    const [bookEntities, total] = await this.repository
+      .createQueryBuilder('book')
+      .where('LOWER(book.title) LIKE LOWER(:title)', { title: `%${title}%` })
+      .andWhere('book.isFavorite = true')
+      .limit(limit)
+      .skip(offset)
+      .getManyAndCount();
+
+    return Result.success({
+      data: BookMapper.toDomainList(bookEntities),
+      limit: limit,
+      offset: offset,
+      total: total,
+      nextCursor:
+        limit && total > (offset || 0) + (limit || 0)
+          ? (offset || 0) + (limit || 0)
+          : null,
+    });
+  }
 }
