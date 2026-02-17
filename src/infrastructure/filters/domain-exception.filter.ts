@@ -13,6 +13,7 @@ import {
   RefreshTokenRevokedError,
   TokenExpiredError,
 } from 'src/domain/exceptions/auth.exceptions';
+import { ForbiddenError } from 'src/domain/exceptions/forbidden.exception';
 import { DomainException } from 'src/domain/exceptions/domain_exception';
 
 @Catch(DomainException)
@@ -45,6 +46,10 @@ export class DomainExceptionFilter implements ExceptionFilter {
       status = HttpStatus.UNAUTHORIZED;
       message = failure.message;
       code = 'REFRESH_TOKEN_REVOKED';
+    } else if (failure instanceof ForbiddenError) {
+      status = HttpStatus.FORBIDDEN;
+      message = failure.message;
+      code = 'FORBIDDEN';
     } else if (failure instanceof Error) {
       // Generic error handling
       status = HttpStatus.INTERNAL_SERVER_ERROR;
