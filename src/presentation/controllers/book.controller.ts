@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Post,
   Put,
@@ -41,9 +42,11 @@ export class BookController {
     private readonly updateBookUseCase: UpdateBookUseCase,
   ) {}
 
+  private readonly logger = new Logger('BookController');
   @Get()
   @UseGuards(JwtAuthGuard)
   getBooks(@Query() paginationDto: PaginatedQuery) {
+    this.logger.log(`Getting books with title ${paginationDto.query}`);
     return this.getBooksUseCase.execute(paginationDto);
   }
 

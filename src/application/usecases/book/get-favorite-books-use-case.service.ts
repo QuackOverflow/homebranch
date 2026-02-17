@@ -15,9 +15,17 @@ export class GetFavoriteBooksUseCase
   ) {}
 
   async execute({
+    query,
     limit,
     offset,
   }: PaginatedQuery): Promise<Result<PaginationResult<Book[]>>> {
+    if (query) {
+      return await this.bookRepository.searchFavoritesByTitle(
+        query,
+        limit,
+        offset,
+      );
+    }
     return await this.bookRepository.findFavorites(limit, offset);
   }
 }
