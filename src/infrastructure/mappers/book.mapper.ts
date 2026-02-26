@@ -30,4 +30,8 @@ export class BookMapper {
   static toDomainList(bookEntityList: BookEntity[]): Book[] {
     return bookEntityList.map((bookEntity) => this.toDomain(bookEntity));
   }
+
+  static toPersistenceList(bookList: Book[]): BookEntity[] {
+    return bookList.map((book) => this.toPersistence(book));
+  }
 }

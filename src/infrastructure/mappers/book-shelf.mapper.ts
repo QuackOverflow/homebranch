@@ -21,8 +21,10 @@ export class BookShelfMapper {
   }
 
   static toDomainList(bookShelfEntityList: BookShelfEntity[]): BookShelf[] {
-    return bookShelfEntityList.map((bookShelfEntity) =>
-      this.toDomain(bookShelfEntity),
-    );
+    return bookShelfEntityList.map((bookShelfEntity) => this.toDomain(bookShelfEntity));
+  }
+
+  static toPersistenceList(bookShelfList: BookShelf[]): BookShelfEntity[] {
+    return bookShelfList.map((bookShelf) => this.toPersistence(bookShelf));
   }
 }

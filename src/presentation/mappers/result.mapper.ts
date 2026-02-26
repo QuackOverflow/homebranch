@@ -15,11 +15,11 @@ export class ResultMapper {
     if (result.isSuccess()) {
       return {
         statusCode: 200,
-        body: { success: true, value: result.getValue() },
+        body: { success: true, value: result.value },
       };
     }
 
-    const error = result.getFailure();
+    const error = result.failure;
 
     switch (error.code) {
       case 'NOT_FOUND':

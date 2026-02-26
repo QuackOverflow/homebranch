@@ -23,7 +23,7 @@ export class UpdateBookShelfUseCase
       return findBookShelfResult;
     }
 
-    const bookShelf = findBookShelfResult.getValue();
+    const bookShelf = findBookShelfResult.value;
 
     bookShelf.title = request.title ?? bookShelf.title;
 

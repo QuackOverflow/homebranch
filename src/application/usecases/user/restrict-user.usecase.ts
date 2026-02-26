@@ -18,7 +18,7 @@ export class RestrictUserUseCase implements UseCase<RestrictUserRequest, User> {
       return findResult;
     }
 
-    const user = findResult.getValue();
+    const user = findResult.value;
     user.isRestricted = true;
 
     return await this.userRepository.update(request.id, user);

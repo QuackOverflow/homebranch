@@ -5,11 +5,7 @@ import { Permission } from 'src/domain/value-objects/permission.enum';
 
 export class RoleMapper {
   static toDomain(roleEntity: RoleEntity): Role {
-    return RoleFactory.create(
-      roleEntity.id,
-      roleEntity.name,
-      roleEntity.permissions as Permission[],
-    );
+    return RoleFactory.create(roleEntity.id, roleEntity.name, roleEntity.permissions as Permission[]);
   }
 
   static toPersistence(role: Role): RoleEntity {
@@ -22,5 +18,9 @@ export class RoleMapper {
 
   static toDomainList(roleEntityList: RoleEntity[]): Role[] {
     return roleEntityList.map((roleEntity) => this.toDomain(roleEntity));
+  }
+
+  static toPersistenceList(roleList: Role[]): RoleEntity[] {
+    return roleList.map((role) => this.toPersistence(role));
   }
 }

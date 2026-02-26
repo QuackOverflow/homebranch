@@ -6,35 +6,30 @@ import { IBookShelfRepository } from '../../interfaces/bookshelf-repository';
 import { RemoveBookFromBookShelfRequest } from '../../contracts/bookshelf/remove-book-from-book-shelf-request';
 
 @Injectable()
-export class RemoveBookFromBookShelfUseCase
-  implements UseCase<RemoveBookFromBookShelfRequest, BookShelf>
-{
+export class RemoveBookFromBookShelfUseCase implements UseCase<RemoveBookFromBookShelfRequest, BookShelf> {
   constructor(
     @Inject('BookShelfRepository')
     private bookShelfRepository: IBookShelfRepository,
   ) {}
 
-  async execute(
-    request: RemoveBookFromBookShelfRequest,
-  ): Promise<Result<BookShelf>> {
-    const findBookShelfResult = await this.bookShelfRepository.findById(
-      request.bookShelfId,
-    );
+  async execute(request: RemoveBookFromBookShelfRequest): Promise<Result<BookShelf>> {
+    const findBookShelfResult = await this.bookShelfRepository.findById(request.bookShelfId);
 
     if (!findBookShelfResult.isSuccess()) {
       return findBookShelfResult;
     }
 
-    const bookShelf = findBookShelfResult.getValue();
+    const bookShelf = findBookShelfResult.value;
 
     if (!bookShelf.books.find((book) => book.id === request.bookId)) {
-      return Result.success(bookShelf);
+      return Result.ok(bookShelf);
     }
 
-    await this.bookShelfRepository.removeBook(
-      request.bookShelfId,
-      request.bookId,
-    );
+    const removeBookResult = await this.bookShelfRepository.removeBook(request.bookShelfId, request.bookId);
+
+    if (!removeBookResult.isSuccess()) {
+      return Result.fail(removeBookResult.failure!);
+    }
 
     return await this.bookShelfRepository.findById(request.bookShelfId);
   }

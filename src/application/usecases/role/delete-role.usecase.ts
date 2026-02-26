@@ -23,7 +23,7 @@ export class DeleteRoleUseCase implements UseCase<DeleteRoleRequest, Role> {
 
     const userCount = await this.userRepository.countByRoleId(request.id);
     if (userCount > 0) {
-      return Result.failure(new RoleHasAssignedUsersFailure());
+      return Result.fail(new RoleHasAssignedUsersFailure());
     }
 
     return await this.roleRepository.delete(request.id);

@@ -17,7 +17,7 @@ export class CreateRoleUseCase implements UseCase<CreateRoleRequest, Role> {
   async execute(request: CreateRoleRequest): Promise<Result<Role>> {
     const existingRole = await this.roleRepository.findByName(request.name);
     if (existingRole.isSuccess()) {
-      return Result.failure(new DuplicateRoleNameFailure());
+      return Result.fail(new DuplicateRoleNameFailure());
     }
 
     const role = RoleFactory.create(

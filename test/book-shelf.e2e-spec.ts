@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
@@ -96,7 +95,7 @@ describe('BookShelfController (e2e)', () => {
   describe('GET /book-shelves', () => {
     it('should return paginated bookshelves', async () => {
       mockGetBookShelvesUseCase.execute.mockResolvedValue(
-        Result.success({
+        Result.ok({
           data: [mockBookShelf],
           limit: 10,
           offset: 0,
@@ -105,9 +104,7 @@ describe('BookShelfController (e2e)', () => {
         }),
       );
 
-      const response = await request(app.getHttpServer())
-        .get('/book-shelves')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/book-shelves').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.value.data).toHaveLength(1);
@@ -116,26 +113,18 @@ describe('BookShelfController (e2e)', () => {
 
   describe('GET /book-shelves/:id', () => {
     it('should return a bookshelf by id', async () => {
-      mockGetBookShelfByIdUseCase.execute.mockResolvedValue(
-        Result.success(mockBookShelf),
-      );
+      mockGetBookShelfByIdUseCase.execute.mockResolvedValue(Result.ok(mockBookShelf));
 
-      const response = await request(app.getHttpServer())
-        .get('/book-shelves/shelf-1')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/book-shelves/shelf-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.value.title).toBe('Fiction');
     });
 
     it('should return error when bookshelf not found', async () => {
-      mockGetBookShelfByIdUseCase.execute.mockResolvedValue(
-        Result.failure(new BookShelfNotFoundFailure()),
-      );
+      mockGetBookShelfByIdUseCase.execute.mockResolvedValue(Result.ok(new BookShelfNotFoundFailure()));
 
-      const response = await request(app.getHttpServer()).get(
-        '/book-shelves/nonexistent',
-      );
+      const response = await request(app.getHttpServer()).get('/book-shelves/nonexistent');
 
       expect(response.body.success).toBe(false);
     });
@@ -144,7 +133,7 @@ describe('BookShelfController (e2e)', () => {
   describe('GET /book-shelves/:id/books', () => {
     it('should return books for a bookshelf', async () => {
       mockGetBookShelfBooksUseCase.execute.mockResolvedValue(
-        Result.success({
+        Result.ok({
           data: [mockBook],
           limit: undefined,
           offset: undefined,
@@ -153,9 +142,7 @@ describe('BookShelfController (e2e)', () => {
         }),
       );
 
-      const response = await request(app.getHttpServer())
-        .get('/book-shelves/shelf-1/books')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/book-shelves/shelf-1/books').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.value.data).toHaveLength(1);
@@ -164,28 +151,19 @@ describe('BookShelfController (e2e)', () => {
 
   describe('POST /book-shelves', () => {
     it('should create a new bookshelf', async () => {
-      mockCreateBookShelfUseCase.execute.mockResolvedValue(
-        Result.success(mockBookShelf),
-      );
+      mockCreateBookShelfUseCase.execute.mockResolvedValue(Result.ok(mockBookShelf));
 
-      const response = await request(app.getHttpServer())
-        .post('/book-shelves')
-        .send({ title: 'Fiction' })
-        .expect(200);
+      const response = await request(app.getHttpServer()).post('/book-shelves').send({ title: 'Fiction' }).expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(mockCreateBookShelfUseCase.execute).toHaveBeenCalledWith(
-        expect.objectContaining({ title: 'Fiction' }),
-      );
+      expect(mockCreateBookShelfUseCase.execute).toHaveBeenCalledWith(expect.objectContaining({ title: 'Fiction' }));
     });
   });
 
   describe('PUT /book-shelves/:id', () => {
     it('should update a bookshelf', async () => {
       const updatedShelf = { ...mockBookShelf, title: 'Updated Title' };
-      mockUpdateBookShelfUseCase.execute.mockResolvedValue(
-        Result.success(updatedShelf),
-      );
+      mockUpdateBookShelfUseCase.execute.mockResolvedValue(Result.ok(updatedShelf));
 
       const response = await request(app.getHttpServer())
         .put('/book-shelves/shelf-1')
@@ -201,27 +179,19 @@ describe('BookShelfController (e2e)', () => {
 
   describe('DELETE /book-shelves/:id', () => {
     it('should delete a bookshelf', async () => {
-      mockDeleteBookShelfUseCase.execute.mockResolvedValue(
-        Result.success(mockBookShelf),
-      );
+      mockDeleteBookShelfUseCase.execute.mockResolvedValue(Result.ok(mockBookShelf));
 
-      const response = await request(app.getHttpServer())
-        .delete('/book-shelves/shelf-1')
-        .expect(200);
+      const response = await request(app.getHttpServer()).delete('/book-shelves/shelf-1').expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(mockDeleteBookShelfUseCase.execute).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'shelf-1' }),
-      );
+      expect(mockDeleteBookShelfUseCase.execute).toHaveBeenCalledWith(expect.objectContaining({ id: 'shelf-1' }));
     });
   });
 
   describe('PUT /book-shelves/:id/add-book', () => {
     it('should add a book to the bookshelf using route param as bookShelfId', async () => {
       const shelfWithBook = { ...mockBookShelf, books: [mockBook] };
-      mockAddBookToBookShelfUseCase.execute.mockResolvedValue(
-        Result.success(shelfWithBook),
-      );
+      mockAddBookToBookShelfUseCase.execute.mockResolvedValue(Result.ok(shelfWithBook));
 
       const response = await request(app.getHttpServer())
         .put('/book-shelves/shelf-1/add-book')
@@ -238,9 +208,7 @@ describe('BookShelfController (e2e)', () => {
 
   describe('PUT /book-shelves/:id/remove-book', () => {
     it('should remove a book from the bookshelf using route param as bookShelfId', async () => {
-      mockRemoveBookFromBookShelfUseCase.execute.mockResolvedValue(
-        Result.success(mockBookShelf),
-      );
+      mockRemoveBookFromBookShelfUseCase.execute.mockResolvedValue(Result.ok(mockBookShelf));
 
       const response = await request(app.getHttpServer())
         .put('/book-shelves/shelf-1/remove-book')

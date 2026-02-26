@@ -47,7 +47,7 @@ export class JwtAuthGuard implements CanActivate {
 
       let user: User;
       if (findResult.isSuccess()) {
-        user = findResult.getValue();
+        user = findResult.value;
       } else {
         this.logger.log('Saving new user');
         // Auto-create user on first authentication
@@ -58,7 +58,7 @@ export class JwtAuthGuard implements CanActivate {
           false,
         );
         const createResult = await this.userRepository.create(newUser);
-        user = createResult.getValue();
+        user = createResult.value!;
 
         // Auto-assign admin role to the first user
         const userCount = await this.userRepository.count();
@@ -66,12 +66,12 @@ export class JwtAuthGuard implements CanActivate {
           this.logger.log('Assigning admin role to new user');
           const adminRoleResult = await this.roleRepository.findByName('admin');
           if (adminRoleResult.isSuccess()) {
-            user.role = adminRoleResult.getValue();
+            user.role = adminRoleResult.value;
             const updateResult = await this.userRepository.update(
               user.id,
               user,
             );
-            user = updateResult.getValue();
+            user = updateResult.value!;
           }
         }
       }

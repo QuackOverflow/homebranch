@@ -29,4 +29,8 @@ export class UserMapper {
   static toDomainList(userEntityList: UserEntity[]): User[] {
     return userEntityList.map((userEntity) => this.toDomain(userEntity));
   }
+
+  static toPersistenceList(userList: User[]): UserEntity[] {
+    return userList.map((user) => this.toPersistence(user));
+  }
 }

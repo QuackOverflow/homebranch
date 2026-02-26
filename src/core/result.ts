@@ -8,64 +8,36 @@ export abstract class Failure {
   }
 }
 
-export abstract class Result<T, E = Failure> {
-  static success<T, E = Failure>(value: T): Result<T, E> {
-    return new _Success(value);
-  }
-
-  static failure<T, E = Failure>(failure: E): Result<T, E> {
-    return new _Failure(failure);
-  }
-
-  abstract isSuccess(): this is _Success<T, E>;
-
-  abstract isFailure(): this is _Failure<T, E>;
-
-  abstract getValue(): T;
-
-  abstract getFailure(): E;
-}
-
-class _Success<T, E> extends Result<T, E> {
-  constructor(private readonly value: T) {
-    super();
-  }
-
-  isSuccess(): this is _Success<T, E> {
-    return true;
-  }
-
-  isFailure(): this is _Failure<T, E> {
-    return false;
-  }
-
-  getValue(): T {
-    return this.value;
-  }
-
-  getFailure(): E {
-    throw new Error('Called getFailure on Success');
+export class UnexpectedFailure extends Failure {
+  constructor(message: string = 'An unexpected error occurred') {
+    super('UNEXPECTED_ERROR', message);
   }
 }
 
-export class _Failure<T, E> extends Result<T, E> {
-  constructor(private readonly error: E) {
-    super();
+export class Result<T = void> {
+  readonly success: boolean;
+  readonly failure?: Failure;
+  readonly value?: T;
+
+  constructor(success: boolean, value?: T, failure?: Failure) {
+    this.success = success;
+    this.value = value;
+    this.failure = failure;
   }
 
-  isSuccess(): this is _Success<T, E> {
-    return false;
+  static ok<T = void>(value?: T): Result<T> {
+    return new Result<T>(true, value);
   }
 
-  isFailure(): this is _Failure<T, E> {
-    return true;
+  static fail<T>(failure: Failure, value?: T): Result<T> {
+    return new Result<T>(false, value, failure);
   }
 
-  getValue(): T {
-    throw new Error('Called getValue on Failure');
+  isSuccess(): this is Result<T> & { value: T } {
+    return this.success;
   }
 
-  getFailure(): E {
-    return this.error;
+  isFailure(): this is Result<T> & { failure: Failure } {
+    return !this.success;
   }
 }

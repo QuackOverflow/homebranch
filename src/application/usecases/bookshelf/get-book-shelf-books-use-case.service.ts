@@ -25,11 +25,11 @@ export class GetBookShelfBooksUseCase
     const findBookShelfResult = await this.bookShelfRepository.findById(id);
 
     if (!findBookShelfResult.isSuccess()) {
-      return Result.failure(findBookShelfResult.getFailure());
+      return Result.fail(findBookShelfResult.failure!);
     }
 
     return await this.bookRepository.findByBookShelfId(
-      findBookShelfResult.getValue(),
+      findBookShelfResult.value,
     );
   }
 }

@@ -9,9 +9,7 @@ import { SavedPositionNotFoundFailure } from 'src/domain/failures/saved-position
 import { Result } from 'src/core/result';
 
 @Injectable()
-export class TypeOrmSavedPositionRepository
-  implements ISavedPositionRepository
-{
+export class TypeOrmSavedPositionRepository implements ISavedPositionRepository {
   constructor(
     @InjectRepository(SavedPositionEntity)
     private repository: Repository<SavedPositionEntity>,
@@ -22,39 +20,34 @@ export class TypeOrmSavedPositionRepository
       where: { userId },
       order: { updatedAt: 'DESC' },
     });
-    return Result.success(
-      entities.map((entity) => SavedPositionMapper.toDomain(entity)),
-    );
+    return Result.ok(entities.map((entity) => SavedPositionMapper.toDomain(entity)));
   }
 
-  async findByBookAndUser(
-    bookId: string,
-    userId: string,
-  ): Promise<Result<SavedPosition>> {
+  async findByBookAndUser(bookId: string, userId: string): Promise<Result<SavedPosition>> {
     const entity = await this.repository.findOne({
       where: { bookId, userId },
     });
 
     if (!entity) {
-      return Result.failure(new SavedPositionNotFoundFailure());
+      return Result.fail(new SavedPositionNotFoundFailure());
     }
 
-    return Result.success(SavedPositionMapper.toDomain(entity));
+    return Result.ok(SavedPositionMapper.toDomain(entity));
   }
 
   async upsert(savedPosition: SavedPosition): Promise<Result<SavedPosition>> {
     const entity = SavedPositionMapper.toPersistence(savedPosition);
     const saved = await this.repository.save(entity);
-    return Result.success(SavedPositionMapper.toDomain(saved));
+    return Result.ok(SavedPositionMapper.toDomain(saved));
   }
 
   async delete(bookId: string, userId: string): Promise<Result<void>> {
     const result = await this.repository.delete({ bookId, userId });
 
     if (result.affected === 0) {
-      return Result.failure(new SavedPositionNotFoundFailure());
+      return Result.fail(new SavedPositionNotFoundFailure());
     }
 
-    return Result.success(undefined);
+    return Result.ok();
   }
 }

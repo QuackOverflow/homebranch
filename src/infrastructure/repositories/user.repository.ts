@@ -11,27 +11,21 @@ import { UserNotFoundFailure } from 'src/domain/failures/user.failures';
 
 @Injectable()
 export class TypeOrmUserRepository implements IUserRepository {
-  constructor(
-    @InjectRepository(UserEntity) private repository: Repository<UserEntity>,
-  ) {}
+  constructor(@InjectRepository(UserEntity) private repository: Repository<UserEntity>) {}
 
-  async findAll(
-    limit?: number,
-    offset?: number,
-  ): Promise<Result<PaginationResult<User[]>>> {
+  async findAll(limit?: number, offset?: number): Promise<Result<PaginationResult<User[]>>> {
     const [userEntities, total] = await this.repository.findAndCount({
       relations: ['role'],
       take: limit,
       skip: offset,
     });
 
-    return Result.success({
+    return Result.ok({
       data: UserMapper.toDomainList(userEntities),
       limit,
       offset,
       total,
-      nextCursor:
-        limit && total > (offset ?? 0) + limit ? (offset ?? 0) + limit : null,
+      nextCursor: limit && total > (offset ?? 0) + limit ? (offset ?? 0) + limit : null,
     });
   }
 
@@ -40,8 +34,8 @@ export class TypeOrmUserRepository implements IUserRepository {
       where: { id },
       relations: ['role'],
     });
-    if (userEntity) return Result.success(UserMapper.toDomain(userEntity));
-    return Result.failure(new UserNotFoundFailure());
+    if (userEntity) return Result.ok(UserMapper.toDomain(userEntity));
+    return Result.fail(new UserNotFoundFailure());
   }
 
   async create(entity: User): Promise<Result<User>> {
@@ -51,12 +45,12 @@ export class TypeOrmUserRepository implements IUserRepository {
       where: { id: savedEntity.id },
       relations: ['role'],
     });
-    return Result.success(UserMapper.toDomain(result!));
+    return Result.ok(UserMapper.toDomain(result!));
   }
 
   async update(id: string, user: User): Promise<Result<User>> {
     const exists = await this.repository.existsBy({ id });
-    if (!exists) return Result.failure(new UserNotFoundFailure());
+    if (!exists) return Result.fail(new UserNotFoundFailure());
 
     const userEntity = UserMapper.toPersistence(user);
     await this.repository.save(userEntity);
@@ -65,7 +59,7 @@ export class TypeOrmUserRepository implements IUserRepository {
       where: { id },
       relations: ['role'],
     });
-    return Result.success(UserMapper.toDomain(result!));
+    return Result.ok(UserMapper.toDomain(result!));
   }
 
   async count(): Promise<number> {

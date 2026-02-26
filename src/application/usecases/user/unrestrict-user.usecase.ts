@@ -20,7 +20,7 @@ export class UnrestrictUserUseCase
       return findResult;
     }
 
-    const user = findResult.getValue();
+    const user = findResult.value;
     user.isRestricted = false;
 
     return await this.userRepository.update(request.id, user);

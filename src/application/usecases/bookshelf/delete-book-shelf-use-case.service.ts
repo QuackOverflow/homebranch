@@ -6,15 +6,19 @@ import { IBookShelfRepository } from '../../interfaces/bookshelf-repository';
 import { UseCase } from 'src/core/usecase';
 
 @Injectable()
-export class DeleteBookShelfUseCase
-  implements UseCase<DeleteBookShelfRequest, BookShelf>
-{
+export class DeleteBookShelfUseCase implements UseCase<DeleteBookShelfRequest, BookShelf> {
   constructor(
     @Inject('BookShelfRepository')
     private bookShelfRepository: IBookShelfRepository,
   ) {}
 
   async execute({ id }: DeleteBookShelfRequest): Promise<Result<BookShelf>> {
+    const findBookShelfResult = await this.bookShelfRepository.findById(id);
+
+    if (findBookShelfResult.isFailure()) {
+      return findBookShelfResult;
+    }
+
     return await this.bookShelfRepository.delete(id);
   }
 }

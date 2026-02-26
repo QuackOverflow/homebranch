@@ -18,7 +18,7 @@ export class UpdateRoleUseCase implements UseCase<UpdateRoleRequest, Role> {
       return findResult;
     }
 
-    const role = findResult.getValue();
+    const role = findResult.value;
     role.permissions = request.permissions;
 
     return await this.roleRepository.update(request.id, role);

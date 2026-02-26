@@ -7,9 +7,7 @@ import { IBookShelfRepository } from '../../interfaces/bookshelf-repository';
 import { AddBookToBookShelfRequest } from '../../contracts/bookshelf/add-book-to-book-shelf-request';
 
 @Injectable()
-export class AddBookToBookShelfUseCase
-  implements UseCase<AddBookToBookShelfRequest, BookShelf>
-{
+export class AddBookToBookShelfUseCase implements UseCase<AddBookToBookShelfRequest, BookShelf> {
   constructor(
     @Inject('BookShelfRepository')
     private bookShelfRepository: IBookShelfRepository,
@@ -18,30 +16,29 @@ export class AddBookToBookShelfUseCase
     private bookRepository: IBookRepository,
   ) {}
 
-  async execute(
-    request: AddBookToBookShelfRequest,
-  ): Promise<Result<BookShelf>> {
-    const findBookShelfResult = await this.bookShelfRepository.findById(
-      request.bookShelfId,
-    );
+  async execute(request: AddBookToBookShelfRequest): Promise<Result<BookShelf>> {
+    const findBookShelfResult = await this.bookShelfRepository.findById(request.bookShelfId);
 
     if (!findBookShelfResult.isSuccess()) {
       return findBookShelfResult;
     }
 
-    const bookShelf = findBookShelfResult.getValue();
+    const bookShelf = findBookShelfResult.value;
 
     if (bookShelf.books.find((book) => book.id === request.bookId)) {
-      return Result.success(bookShelf);
+      return Result.ok(bookShelf);
     }
 
     const findBookResult = await this.bookRepository.findById(request.bookId);
 
-    if (!findBookResult.isSuccess()) {
-      return Result.failure(findBookResult.getFailure());
+    if (findBookResult.isFailure()) {
+      return Result.fail(findBookResult.failure);
     }
 
-    await this.bookShelfRepository.addBook(request.bookShelfId, request.bookId);
+    const addBookResult = await this.bookShelfRepository.addBook(request.bookShelfId, request.bookId);
+    if (addBookResult.isFailure()) {
+      return Result.fail(addBookResult.failure);
+    }
 
     return await this.bookShelfRepository.findById(request.bookShelfId);
   }

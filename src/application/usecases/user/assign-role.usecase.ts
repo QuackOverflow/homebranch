@@ -20,12 +20,12 @@ export class AssignRoleUseCase implements UseCase<AssignRoleRequest, User> {
     }
 
     const findRoleResult = await this.roleRepository.findById(request.roleId);
-    if (!findRoleResult.isSuccess()) {
-      return Result.failure(findRoleResult.getFailure());
+    if (findRoleResult.isFailure()) {
+      return Result.fail(findRoleResult.failure);
     }
 
-    const user = findUserResult.getValue();
-    user.role = findRoleResult.getValue();
+    const user = findUserResult.value;
+    user.role = findRoleResult.value;
 
     return await this.userRepository.update(request.userId, user);
   }
