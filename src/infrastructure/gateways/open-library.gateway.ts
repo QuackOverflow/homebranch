@@ -50,7 +50,7 @@ export class OpenLibraryGateway {
       const biography = searchResult.hasBio
         ? await this.fetchAuthorBiography(olid)
         : null;
-      const photoUrl = `${this.coversUrl}/a/olid/${olid}-L.jpg`;
+      const photoUrl = await this.fetchAuthorPhotoUrl(olid);
 
       return { biography, photoUrl };
     } catch (error) {
@@ -127,5 +127,20 @@ export class OpenLibraryGateway {
     }
 
     return data.bio.value ?? null;
+  }
+
+  private async fetchAuthorPhotoUrl(olid: string): Promise<string | null> {
+    const url = `${this.coversUrl}/a/olid/${olid}-L.jpg?default=false`;
+    const response = await fetch(url, {
+      method: 'HEAD',
+      headers: { 'User-Agent': this.userAgent },
+      signal: this.createAbortSignal(),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return `${this.coversUrl}/a/olid/${olid}-L.jpg`;
   }
 }
