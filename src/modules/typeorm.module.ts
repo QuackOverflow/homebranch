@@ -14,6 +14,7 @@ import { SeedAdminRole1739836800001 } from '../migrations/1739836800001-SeedAdmi
 import { AddSavedPositionsTable1755566512419 } from '../migrations/1755566512419-AddSavedPositionsTable';
 import { AddPercentageToSavedPosition1755566512420 } from '../migrations/1755566512420-AddPercentageToSavedPosition';
 import { AddAuthorTable1740614850000 } from '../migrations/1740614850000-AddAuthorTable';
+import { AddSummaryToBook1755566512421 } from '../migrations/1755566512421-AddSummaryToBook';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { AddAuthorTable1740614850000 } from '../migrations/1740614850000-AddAuth
             AddSavedPositionsTable1755566512419,
             AddPercentageToSavedPosition1755566512420,
             AddAuthorTable1740614850000,
+            AddSummaryToBook1755566512421,
           ],
           migrationsRun: true,
           migrationsTableName: 'migration_table',
