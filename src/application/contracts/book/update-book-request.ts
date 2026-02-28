@@ -18,4 +18,8 @@ export class UpdateBookRequest {
 
   @IsOptional()
   isFavorite?: boolean;
+
+  @IsOptional()
+  @IsString()
+  summary?: string;
 }

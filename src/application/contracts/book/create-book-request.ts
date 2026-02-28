@@ -23,4 +23,8 @@ export class CreateBookRequest {
   @IsOptional()
   @IsString()
   coverImageFileName?: string;
+
+  @IsOptional()
+  @IsString()
+  summary?: string;
 }

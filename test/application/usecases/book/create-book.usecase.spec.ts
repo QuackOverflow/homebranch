@@ -118,6 +118,37 @@ describe('CreateBookUseCase', () => {
     expect(calledWith.isFavorite).toBe(true);
   });
 
+  test('Successfully creates a book with a summary', async () => {
+    bookRepository.create.mockResolvedValueOnce(Result.ok(mockBook));
+
+    const result = await useCase.execute({
+      title: 'Test Book',
+      author: 'Test Author',
+      fileName: 'test-book.epub',
+      summary: 'A test book summary.',
+    });
+
+    expect(result.isSuccess()).toBe(true);
+
+    const calledWith = bookRepository.create.mock.calls[0][0];
+    expect(calledWith.summary).toBe('A test book summary.');
+  });
+
+  test('Successfully creates a book without a summary', async () => {
+    bookRepository.create.mockResolvedValueOnce(Result.ok(mockBook));
+
+    const result = await useCase.execute({
+      title: 'Test Book',
+      author: 'Test Author',
+      fileName: 'test-book.epub',
+    });
+
+    expect(result.isSuccess()).toBe(true);
+
+    const calledWith = bookRepository.create.mock.calls[0][0];
+    expect(calledWith.summary).toBeUndefined();
+  });
+
   test('Fails when repository create fails', async () => {
     const error = new UnexpectedFailure('Database error');
     bookRepository.create.mockResolvedValueOnce(Result.fail(error));

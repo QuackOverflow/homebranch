@@ -23,6 +23,7 @@ export class CreateBookUseCase implements UseCase<CreateBookRequest, Book> {
       dto.isFavorite ?? false,
       dto.publishedYear ? this._parseYear(dto.publishedYear) : undefined,
       dto.coverImageFileName,
+      dto.summary,
     );
     return await this.bookRepository.create(book);
   }

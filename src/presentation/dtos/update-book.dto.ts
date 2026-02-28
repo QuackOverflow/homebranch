@@ -3,4 +3,5 @@ export interface UpdateBookDto {
   author?: string;
   isFavorite?: boolean;
   publishedYear?: number;
+  summary?: string;
 }

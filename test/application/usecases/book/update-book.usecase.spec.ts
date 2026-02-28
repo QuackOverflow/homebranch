@@ -90,6 +90,22 @@ describe('UpdateBookUseCase', () => {
     expect(result.value!.isFavorite).toBe(true);
   });
 
+  test('Successfully updates a book summary', async () => {
+    const updatedBook = { ...mockBook, summary: 'Updated summary.' };
+    bookRepository.findById.mockResolvedValueOnce(Result.ok(mockBook));
+    bookRepository.update.mockResolvedValueOnce(Result.ok(updatedBook));
+
+    const result = await useCase.execute({
+      id: mockBook.id,
+      summary: 'Updated summary.',
+    });
+
+    expect(bookRepository.findById).toHaveBeenCalledTimes(1);
+    expect(bookRepository.update).toHaveBeenCalledTimes(1);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.value!.summary).toBe('Updated summary.');
+  });
+
   test('Fails when book not found', async () => {
     bookRepository.findById.mockResolvedValueOnce(Result.fail(bookNotFoundFailure));
 

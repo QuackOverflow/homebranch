@@ -12,6 +12,7 @@ export class BookMapper {
       bookEntity.isFavorite,
       bookEntity.publishedYear,
       bookEntity.coverImageFileName,
+      bookEntity.summary,
     );
   }
 
@@ -24,6 +25,7 @@ export class BookMapper {
       isFavorite: book.isFavorite,
       publishedYear: book.publishedYear,
       coverImageFileName: book.coverImageFileName,
+      summary: book.summary,
     };
   }
 

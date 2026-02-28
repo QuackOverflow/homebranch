@@ -7,5 +7,6 @@ export class Book {
     public isFavorite: boolean,
     public publishedYear?: number,
     public coverImageFileName?: string,
+    public summary?: string,
   ) {}
 }

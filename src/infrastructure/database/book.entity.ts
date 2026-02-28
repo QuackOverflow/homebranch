@@ -24,6 +24,9 @@ export class BookEntity {
   @Column({ name: 'cover_image_file_name', nullable: true })
   coverImageFileName?: string;
 
+  @Column({ type: 'text', nullable: true, default: null })
+  summary?: string;
+
   @ManyToMany(() => BookShelfEntity, (bookShelf) => bookShelf.books)
   bookShelves?: BookShelfEntity[];
 }
